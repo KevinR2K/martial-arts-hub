@@ -17,9 +17,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
     } else {
 
-        $sql = "SELECT id, name, email, password
-                FROM users
-                WHERE email = ?";
+        $sql = "SELECT id, name, password, role FROM users WHERE email = ?";
 
         $stmt = $conn->prepare($sql);
 
@@ -38,9 +36,19 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 $_SESSION["user_id"] = $user["id"];
                 $_SESSION["user_name"] = $user["name"];
                 $_SESSION["user_email"] = $user["email"];
+                $_SESSION["role"] = $user["role"];
 
-                header("Location: index.php");
+                if ($user["role"] === "admin") {
+
+                   header("Location: admin.php");
                 exit();
+
+                } else {
+
+                   header("Location: index.php");
+                exit();
+
+}
 
             } else {
 
