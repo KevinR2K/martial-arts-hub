@@ -10,6 +10,18 @@ if (!isset($_SESSION["user_id"])) {
 }
 
 $user_id = $_SESSION["user_id"];
+$sql = "SELECT *
+        FROM followed_fighters
+        WHERE user_id = ?
+        ORDER BY created_at DESC";
+
+$stmt = $conn->prepare($sql);
+
+$stmt->bind_param("i", $user_id);
+
+$stmt->execute();
+
+$followed_fighters = $stmt->get_result();
 
 $sql = "SELECT id, name, email, created_at
         FROM users
@@ -158,6 +170,56 @@ $stmt->close();
         </div>
 
     </div>
+    <section class="followed-fighters">
+
+    <h2>My Followed Fighters</h2>
+
+    <?php if ($followed_fighters->num_rows > 0): ?>
+
+        <div class="fighter-grid">
+
+            <?php while ($fighter = $followed_fighters->fetch_assoc()): ?>
+
+                <div class="fighter-card">
+
+                    <?php if (!empty($fighter["fighter_image"])): ?>
+
+                        <img
+                            src="<?php echo htmlspecialchars($fighter["fighter_image"]); ?>"
+                            alt="<?php echo htmlspecialchars($fighter["fighter_name"]); ?>"
+                        >
+
+                    <?php endif; ?>
+
+
+                    <h3>
+                        <?php echo htmlspecialchars($fighter["fighter_name"]); ?>
+                    </h3>
+
+
+                    <a href="fighter.php?slug=<?php echo urlencode($fighter["fighter_slug"]); ?>">
+                        View Profile →
+                    </a>
+
+                </div>
+
+            <?php endwhile; ?>
+
+        </div>
+
+    <?php else: ?>
+
+        <p>
+            You are not following any fighters yet.
+        </p>
+
+        <a href="fighters.php">
+            Explore Fighters →
+        </a>
+
+    <?php endif; ?>
+
+</section>
 
 </body>
 
