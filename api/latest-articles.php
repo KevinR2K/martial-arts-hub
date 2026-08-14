@@ -1,6 +1,5 @@
 <?php
-
-$apiKey = "a135ec0102f94414b9260e4503ceef27";
+require_once __DIR__ . "/../config/api-config.php";
 
 $url = "https://newsapi.org/v2/everything?" . http_build_query([
     "q" => '"UFC" OR "MMA" OR "Ultimate Fighting Championship"',
@@ -14,7 +13,7 @@ $ch = curl_init($url);
 curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
 
 curl_setopt($ch, CURLOPT_HTTPHEADER, [
-    "X-Api-Key: " . $apiKey,
+    "X-Api-Key: " . $newsApiKey,
     "User-Agent: MartialArtsHub/1.0"
 ]);
 
