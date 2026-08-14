@@ -1,7 +1,7 @@
 <?php
 session_start();
 require_once "config/database.php";
-
+require_once "api/latest-articles.php";
 $sql = "SELECT id, title, content, image, category, is_featured
         FROM articles
         WHERE is_featured = TRUE
@@ -199,89 +199,53 @@ $result = $conn->query($sql);
 
 <section class="latest-articles">
 
-    <div class="section-title">
-        <p>STAY UPDATED</p>
-        <h2>Latest Articles</h2>
-        <span>
-            Fresh stories, training tips and martial arts insights.
-        </span>
-    </div>
+    <div class="article-grid">
 
-    <div class="latest-container">
+        <?php foreach ($newsArticles as $article): ?>
 
-        <article class="latest-card">
+            <article class="article-card">
 
-            <img src="assets/images/latest1.jpg" alt="MMA training">
+                <?php if (!empty($article["urlToImage"])): ?>
 
-            <div class="latest-content">
+                    <img
+                        src="<?php echo htmlspecialchars($article["urlToImage"]); ?>"
+                        alt="<?php echo htmlspecialchars($article["title"]); ?>"
+                           onerror="this.onerror=null; this.src='assets/images/latest1.jpg';"
+                    >
 
-                <span class="category">TRAINING</span>
+                <?php endif; ?>
 
-                <h3>5 Training Habits Every Fighter Should Develop</h3>
+                <div class="article-content">
 
-                <p>
-                    Learn the essential habits that can help fighters
-                    improve their fitness, discipline and performance.
-                </p>
+                    <h3>
+                        <?php echo htmlspecialchars($article["title"]); ?>
+                    </h3>
 
-                <div class="article-meta">
-                    <span>Aug 07, 2026</span>
-                    <a href="#">Read More →</a>
+                    <?php if (!empty($article["description"])): ?>
+
+                        <p>
+                            <?php echo htmlspecialchars($article["description"]); ?>
+                        </p>
+
+                    <?php endif; ?>
+
+                    <small>
+                        <?php echo htmlspecialchars($article["source"]["name"] ?? "News"); ?>
+                    </small>
+
+                    <a
+                        href="<?php echo htmlspecialchars($article["url"]); ?>"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                    >
+                        Read Article →
+                    </a>
+
                 </div>
 
-            </div>
+            </article>
 
-        </article>
-
-
-        <article class="latest-card">
-
-            <img src="assets/images/latest2.jpg" alt="Boxing training">
-
-            <div class="latest-content">
-
-                <span class="category">BOXING</span>
-
-                <h3>Understanding the Fundamentals of Boxing</h3>
-
-                <p>
-                    From footwork to combinations, discover the basics
-                    every beginner boxer should understand.
-                </p>
-
-                <div class="article-meta">
-                    <span>Aug 05, 2026</span>
-                    <a href="#">Read More →</a>
-                </div>
-
-            </div>
-
-        </article>
-
-
-        <article class="latest-card">
-
-            <img src="assets/images/latest3.jpg" alt="Martial arts training">
-
-            <div class="latest-content">
-
-                <span class="category">MARTIAL ARTS</span>
-
-                <h3>Why Discipline Matters More Than Talent</h3>
-
-                <p>
-                    Martial arts teaches lessons that go beyond
-                    fighting, competition and physical strength.
-                </p>
-
-                <div class="article-meta">
-                    <span>Aug 03, 2026</span>
-                    <a href="#">Read More →</a>
-                </div>
-
-            </div>
-
-        </article>
+        <?php endforeach; ?>
 
     </div>
 

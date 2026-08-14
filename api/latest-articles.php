@@ -3,10 +3,10 @@
 $apiKey = "a135ec0102f94414b9260e4503ceef27";
 
 $url = "https://newsapi.org/v2/everything?" . http_build_query([
-    "q" => "UFC OR MMA",
+    "q" => '"UFC" OR "MMA" OR "Ultimate Fighting Championship"',
     "language" => "en",
     "sortBy" => "publishedAt",
-    "pageSize" => 6
+    "pageSize" => 50
 ]);
 
 $ch = curl_init($url);
@@ -30,8 +30,26 @@ $newsData = json_decode($response, true);
 
 $newsArticles = $newsData["articles"] ?? [];
 
-echo "<pre>";
-print_r($newsArticles);
-echo "</pre>";
+$filteredArticles = [];
+
+foreach ($newsArticles as $article) {
+
+    $text = strtolower(
+        ($article["title"] ?? "") . " " .
+        ($article["description"] ?? "")
+    );
+
+    if (
+        strpos($text, "ufc") !== false ||
+        strpos($text, "mma") !== false ||
+        strpos($text, "mixed martial arts") !== false ||
+        strpos($text, "ultimate fighting championship") !== false
+    ) {
+        $filteredArticles[] = $article;
+    }
+}
+
+$newsArticles = array_slice($filteredArticles, 0, 6);
+
 
 ?>
