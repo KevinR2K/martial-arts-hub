@@ -4,13 +4,11 @@ session_start();
 
 require_once "config/database.php";
 
-
 // Protect admin page
 if (!isset($_SESSION["user_id"]) || $_SESSION["role"] !== "admin") {
     header("Location: index.php");
     exit();
 }
-
 
 // Get all articles
 $sql = "SELECT id, title, category, is_featured, created_at
@@ -25,118 +23,140 @@ $result = $conn->query($sql);
 <html lang="en">
 
 <head>
-
     <meta charset="UTF-8">
-
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <title>Manage Articles - Admin</title>
 
     <link rel="stylesheet" href="assets/css/style.css">
-
+    <link rel="stylesheet" href="assets/css/admin.css">
 </head>
 
 <body>
 
-    <div class="admin-container">
+<div class="admin-container">
 
-        <div class="admin-header">
+    <header class="admin-header">
 
-            <div>
-
-                <h1>Manage Articles</h1>
-
-                <p>View and manage your website articles.</p>
-
-            </div>
-
-            <a href="admin.php" class="admin-back">
-                ← Dashboard
-            </a>
-
+        <div>
+            <h1>Manage Articles</h1>
+            <p>View and manage your website articles.</p>
         </div>
 
+        <a href="admin.php" class="admin-back">
+            ← Dashboard
+        </a>
 
-        <a href="add-article.php" class="admin-back">
+    </header>
+
+
+    <div class="admin-toolbar">
+
+        <a href="add-article.php" class="admin-btn">
             + Add New Article
         </a>
 
+    </div>
 
-        <div class="article-table">
 
-            <table>
+    <div class="admin-table-wrapper">
 
-                <thead>
+        <table class="admin-table">
+
+            <thead>
+
+                <tr>
+                    <th>ID</th>
+                    <th>Title</th>
+                    <th>Category</th>
+                    <th>Featured</th>
+                    <th>Actions</th>
+                </tr>
+
+            </thead>
+
+            <tbody>
+
+            <?php if ($result->num_rows > 0): ?>
+
+                <?php while ($article = $result->fetch_assoc()): ?>
 
                     <tr>
-                        <th>ID</th>
-                        <th>Title</th>
-                        <th>Category</th>
-                        <th>Featured</th>
-                        <th>Actions</th>
-                    </tr>
 
-                </thead>
+                        <td>
+                            <?php echo $article["id"]; ?>
+                        </td>
 
+                        <td>
+                            <?php echo htmlspecialchars($article["title"]); ?>
+                        </td>
 
-                <tbody>
+                        <td>
+                            <?php echo htmlspecialchars($article["category"]); ?>
+                        </td>
 
-                    <?php while ($article = $result->fetch_assoc()): ?>
+                        <td>
 
-                        <tr>
+                            <?php if ($article["is_featured"]): ?>
 
-                            <td>
-                                <?php echo $article["id"]; ?>
-                            </td>
+                                <span class="status-featured">
+                                    ⭐ Featured
+                                </span>
 
-                            <td>
-                                <?php echo htmlspecialchars($article["title"]); ?>
-                            </td>
+                            <?php else: ?>
 
-                            <td>
-                                <?php echo htmlspecialchars($article["category"]); ?>
-                            </td>
+                                <span class="status-normal">
+                                    Normal
+                                </span>
 
-                            <td>
+                            <?php endif; ?>
 
-                                <?php if ($article["is_featured"]): ?>
+                        </td>
 
-                                    ⭐ Yes
+                        <td>
 
-                                <?php else: ?>
+                            <div class="table-actions">
 
-                                    No
-
-                                <?php endif; ?>
-
-                            </td>
-
-                            <td>
-
-                                <a href="edit-article.php?id=<?php echo $article["id"]; ?>">
+                                <a
+                                    href="edit-article.php?id=<?php echo $article["id"]; ?>"
+                                    class="admin-btn"
+                                >
                                     Edit
                                 </a>
 
-                                |
-
-                                <a href="delete-article.php?id=<?php echo $article["id"]; ?>"
-                                   onclick="return confirm('Are you sure you want to delete this article?');">
+                                <a
+                                    href="delete-article.php?id=<?php echo $article["id"]; ?>"
+                                    class="admin-btn delete-btn"
+                                    onclick="return confirm('Are you sure you want to delete this article?');"
+                                >
                                     Delete
                                 </a>
 
-                            </td>
+                            </div>
 
-                        </tr>
+                        </td>
 
-                    <?php endwhile; ?>
+                    </tr>
 
-                </tbody>
+                <?php endwhile; ?>
 
-            </table>
+            <?php else: ?>
 
-        </div>
+                <tr>
+                    <td colspan="5" class="empty-message">
+                        No articles found.
+                    </td>
+                </tr>
+
+            <?php endif; ?>
+
+            </tbody>
+
+        </table>
 
     </div>
+
+</div>
 
 </body>
 

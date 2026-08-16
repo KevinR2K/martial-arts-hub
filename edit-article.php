@@ -13,7 +13,7 @@ if (!isset($_SESSION["user_id"]) || $_SESSION["role"] !== "admin") {
 
 
 // Get article ID
-$article_id = $_GET["id"] ?? 0;
+$article_id = (int)($_GET["id"] ?? 0);
 
 
 // Update article
@@ -56,7 +56,6 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     }
 
     $stmt->close();
-
 }
 
 
@@ -100,91 +99,127 @@ $stmt->close();
     <title>Edit Article - Admin</title>
 
     <link rel="stylesheet" href="assets/css/style.css">
+    <link rel="stylesheet" href="assets/css/admin.css">
 
 </head>
 
 <body>
 
-    <div class="admin-container">
+<div class="admin-container">
 
-        <div class="admin-header">
+    <header class="admin-header">
 
-            <div>
-
-                <h1>Edit Article</h1>
-
-                <p>Update your article.</p>
-
-            </div>
-
-            <a href="manage-articles.php" class="admin-back">
-                ← Manage Articles
-            </a>
-
+        <div>
+            <h1>Edit Article</h1>
+            <p>Update article information and content.</p>
         </div>
 
+        <a href="manage-articles.php" class="admin-back">
+            ← Manage Articles
+        </a>
+
+    </header>
+
+
+    <div class="admin-form-card">
 
         <form method="POST" class="article-form">
 
-            <label>Article Title</label>
 
-            <input
-                type="text"
-                name="title"
-                value="<?php echo htmlspecialchars($article["title"]); ?>"
-                required
-            >
+            <div class="form-group">
 
+                <label for="title">
+                    Article Title
+                </label>
 
-            <label>Category</label>
+                <input
+                    type="text"
+                    id="title"
+                    name="title"
+                    value="<?php echo htmlspecialchars($article["title"]); ?>"
+                    required
+                >
 
-            <select name="category" required>
-
-                <option value="MMA"
-                    <?php if ($article["category"] === "MMA") echo "selected"; ?>>
-                    MMA
-                </option>
-
-                <option value="MUAY THAI"
-                    <?php if ($article["category"] === "MUAY THAI") echo "selected"; ?>>
-                    Muay Thai
-                </option>
-
-                <option value="BJJ"
-                    <?php if ($article["category"] === "BJJ") echo "selected"; ?>>
-                    BJJ
-                </option>
-
-                <option value="BOXING"
-                    <?php if ($article["category"] === "BOXING") echo "selected"; ?>>
-                    Boxing
-                </option>
-
-                <option value="KARATE"
-                    <?php if ($article["category"] === "KARATE") echo "selected"; ?>>
-                    Karate
-                </option>
-
-            </select>
+            </div>
 
 
-            <label>Image Path</label>
+            <div class="form-group">
 
-            <input
-                type="text"
-                name="image"
-                value="<?php echo htmlspecialchars($article["image"]); ?>"
-                required
-            >
+                <label for="category">
+                    Category
+                </label>
+
+                <select
+                    id="category"
+                    name="category"
+                    required
+                >
+
+                    <option value="MMA"
+                        <?php if ($article["category"] === "MMA") echo "selected"; ?>>
+                        MMA
+                    </option>
+
+                    <option value="MUAY THAI"
+                        <?php if ($article["category"] === "MUAY THAI") echo "selected"; ?>>
+                        Muay Thai
+                    </option>
+
+                    <option value="BJJ"
+                        <?php if ($article["category"] === "BJJ") echo "selected"; ?>>
+                        BJJ
+                    </option>
+
+                    <option value="BOXING"
+                        <?php if ($article["category"] === "BOXING") echo "selected"; ?>>
+                        Boxing
+                    </option>
+
+                    <option value="KARATE"
+                        <?php if ($article["category"] === "KARATE") echo "selected"; ?>>
+                        Karate
+                    </option>
+
+                </select>
+
+            </div>
 
 
-            <label>Article Content</label>
+            <div class="form-group">
 
-            <textarea
-                name="content"
-                rows="10"
-                required
-            ><?php echo htmlspecialchars($article["content"]); ?></textarea>
+                <label for="image">
+                    Image Path
+                </label>
+
+                <input
+                    type="text"
+                    id="image"
+                    name="image"
+                    value="<?php echo htmlspecialchars($article["image"]); ?>"
+                    required
+                >
+
+                <small>
+                    Example: assets/images/article1.jpg
+                </small>
+
+            </div>
+
+
+            <div class="form-group">
+
+                <label for="content">
+                    Article Content
+                </label>
+
+                <textarea
+                    id="content"
+                    name="content"
+                    rows="12"
+                    required
+                ><?php echo htmlspecialchars($article["content"]); ?></textarea>
+
+            </div>
 
 
             <label class="checkbox-label">
@@ -195,18 +230,37 @@ $stmt->close();
                     <?php if ($article["is_featured"]) echo "checked"; ?>
                 >
 
-                Featured Article
+                <span>
+                    Show this article in Featured Articles
+                </span>
 
             </label>
 
 
-            <button type="submit">
-                Update Article
-            </button>
+            <div class="form-buttons">
+
+                <button
+                    type="submit"
+                    class="admin-btn"
+                >
+                    Update Article
+                </button>
+
+                <a
+                    href="manage-articles.php"
+                    class="cancel-btn"
+                >
+                    Cancel
+                </a>
+
+            </div>
+
 
         </form>
 
     </div>
+
+</div>
 
 </body>
 

@@ -156,37 +156,37 @@ $result = $conn->query($sql);
 
     <div class="category-grid">
 
-        <a href="#" class="category-card">
+        <a href="categories.php?category=BOXING" class="category-card">
             <div class="category-icon">🥊</div>
             <h3>Boxing</h3>
             <p>Footwork, punches and fighting techniques.</p>
         </a>
 
-        <a href="#" class="category-card">
+        <a href="categories.php?category=MMA" class="category-card">
             <div class="category-icon">🥋</div>
             <h3>MMA</h3>
             <p>The world of mixed martial arts.</p>
         </a>
 
-        <a href="#" class="category-card">
+        <a href="categories.php?category=MUAY%20THAI" class="category-card">
             <div class="category-icon">🦵</div>
             <h3>Muay Thai</h3>
             <p>The art of eight limbs and powerful striking.</p>
         </a>
 
-        <a href="#" class="category-card">
+        <a href="categories.php?category=BJJ" class="category-card">
             <div class="category-icon">🤼</div>
             <h3>Brazilian Jiu-Jitsu</h3>
             <p>Grappling, submissions and ground fighting.</p>
         </a>
 
-        <a href="#" class="category-card">
+        <a href="categories.php?category=KARATE" class="category-card">
             <div class="category-icon">🥋</div>
             <h3>Karate</h3>
             <p>Discipline, precision and traditional techniques.</p>
         </a>
 
-        <a href="#" class="category-card">
+        <a href="categories.php?category=KICKBOXING" class="category-card">
             <div class="category-icon">👊</div>
             <h3>Kickboxing</h3>
             <p>Powerful combinations and striking techniques.</p>
@@ -201,130 +201,117 @@ $result = $conn->query($sql);
 
     <div class="article-grid">
 
-        <?php foreach ($newsArticles as $article): ?>
+        <?php
 
-            <article class="article-card">
+$fallbackImages = [
+    "assets/images/latest1.jpg",
+    "assets/images/latest2.jpg",
+    "assets/images/latest3.jpg",
+    "assets/images/article1.jpg",
+    "assets/images/article2.jpg",
+    "assets/images/article3.jpg"
+];
 
-                <?php if (!empty($article["urlToImage"])): ?>
+?>
 
-                    <img
-                        src="<?php echo htmlspecialchars($article["urlToImage"]); ?>"
-                        alt="<?php echo htmlspecialchars($article["title"]); ?>"
-                           onerror="this.onerror=null; this.src='assets/images/latest1.jpg';"
-                    >
+<?php foreach ($newsArticles as $index => $article): ?>
 
-                <?php endif; ?>
+    <?php
 
-                <div class="article-content">
+    // Pick a different fallback image for each card
+    $fallbackImage = $fallbackImages[
+        $index % count($fallbackImages)
+    ];
 
-                    <h3>
-                        <?php echo htmlspecialchars($article["title"]); ?>
-                    </h3>
+    // Use API image if available
+    if (!empty($article["urlToImage"])) {
 
-                    <?php if (!empty($article["description"])): ?>
+        $articleImage = $article["urlToImage"];
 
-                        <p>
-                            <?php echo htmlspecialchars($article["description"]); ?>
-                        </p>
+    } else {
 
-                    <?php endif; ?>
+        $articleImage = $fallbackImage;
 
-                    <small>
-                        <?php echo htmlspecialchars($article["source"]["name"] ?? "News"); ?>
-                    </small>
+    }
 
-                    <a
-                        href="<?php echo htmlspecialchars($article["url"]); ?>"
-                        target="_blank"
-                        rel="noopener noreferrer"
-                    >
-                        Read Article →
-                    </a>
+    ?>
 
-                </div>
+    <article class="article-card">
 
-            </article>
+        <img
+            src="<?php echo htmlspecialchars($articleImage); ?>"
+            alt="<?php echo htmlspecialchars($article["title"]); ?>"
+            onerror="this.onerror=null; this.src='<?php echo htmlspecialchars($fallbackImage); ?>';"
+        >
 
-        <?php endforeach; ?>
+        <div class="article-content">
+
+            <h3>
+                <?php echo htmlspecialchars($article["title"]); ?>
+            </h3>
+
+            <?php if (!empty($article["description"])): ?>
+
+                <p>
+                    <?php echo htmlspecialchars($article["description"]); ?>
+                </p>
+
+            <?php endif; ?>
+
+            <small>
+                <?php echo htmlspecialchars(
+                    $article["source"]["name"] ?? "News"
+                ); ?>
+            </small>
+
+            <a
+                href="<?php echo htmlspecialchars($article["url"]); ?>"
+                target="_blank"
+                rel="noopener noreferrer"
+            >
+                Read Article →
+            </a>
+
+        </div>
+
+    </article>
+
+<?php endforeach; ?>
 
     </div>
 
 </section>
-<!-- FIGHTERS -->
-
-<section class="fighters">
+<section class="fighters" id="fighters">
 
     <div class="section-title">
         <p>THE FIGHTERS</p>
-        <h2>Featured Fighters</h2>
+        <h2>Find UFC Fighters</h2>
         <span>
-            Discover some of the biggest names in combat sports.
+            Search fighters and explore their records, divisions and profiles.
         </span>
     </div>
 
-    <div class="fighter-grid">
-
-        <div class="fighter-card">
-
-            <img src="assets/images/fighter1.jpg" alt="MMA fighter">
-
-            <div class="fighter-info">
-                <span>MMA</span>
-                <h3>Featured Fighter</h3>
-                <p>Mixed Martial Arts</p>
-
-                <a href="#">View Profile →</a>
-            </div>
-
-        </div>
-
-
-        <div class="fighter-card">
-
-            <img src="assets/images/fighter2.jpg" alt="Boxing fighter">
-
-            <div class="fighter-info">
-                <span>BOXING</span>
-                <h3>Featured Fighter</h3>
-                <p>Professional Boxing</p>
-
-                <a href="#">View Profile →</a>
-            </div>
-
-        </div>
-
-
-        <div class="fighter-card">
-
-            <img src="assets/images/fighter3.jpg" alt="Kickboxing fighter">
-
-            <div class="fighter-info">
-                <span>KICKBOXING</span>
-                <h3>Featured Fighter</h3>
-                <p>Professional Kickboxing</p>
-
-                <a href="#">View Profile →</a>
-            </div>
-
-        </div>
-
-    </div>
-
-    <!-- Fighter Search -->
-
     <div class="fighter-search">
 
-        <h3>Looking for a specific fighter?</h3>
+        <h3>Search Fighter Database</h3>
 
-        <p>Search our fighter database.</p>
+        <p>
+            Enter a UFC fighter name to view their profile and record.
+        </p>
 
-        <form>
+        <form action="fighters.php" method="GET">
+
             <input
                 type="text"
-                placeholder="Search fighter..."
+                name="search"
+                placeholder="Enter fighter name..."
+                required
             >
 
-            <button type="submit">Search</button>
+            <button type="submit">
+                Search Fighter
+            </button>
+
         </form>
 
     </div>
@@ -376,38 +363,7 @@ $result = $conn->query($sql);
     </div>
 
 </section>
-<!-- NEWSLETTER -->
 
-<section class="newsletter">
-
-    <div class="newsletter-content">
-
-        <p>STAY IN THE FIGHT</p>
-
-        <h2>Never Miss an Update.</h2>
-
-        <span>
-            Get the latest martial arts news, articles and fighter
-            stories delivered to your inbox.
-        </span>
-
-        <form class="newsletter-form">
-
-            <input
-                type="email"
-                placeholder="Enter your email address"
-                required
-            >
-
-            <button type="submit">
-                Subscribe
-            </button>
-
-        </form>
-
-    </div>
-
-</section>
 <!-- FOOTER -->
 
 <footer class="footer">

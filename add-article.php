@@ -73,88 +73,106 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     <title>Add Article - Admin</title>
 
     <link rel="stylesheet" href="assets/css/style.css">
+    <link rel="stylesheet" href="assets/css/admin.css">
 
 </head>
 
 <body>
 
-    <div class="admin-container">
+<div class="admin-container">
 
-        <div class="admin-header">
+    <header class="admin-header">
 
-            <div>
-
-                <h1>Add New Article</h1>
-
-                <p>Create a new article for Martial Arts Hub.</p>
-
-            </div>
-
-            <a href="admin.php" class="admin-back">
-                ← Dashboard
-            </a>
-
+        <div>
+            <h1>Add New Article</h1>
+            <p>Create a new article for Martial Arts Hub.</p>
         </div>
 
+        <a href="manage-articles.php" class="admin-back">
+            ← Manage Articles
+        </a>
 
-        <?php if ($message): ?>
+    </header>
 
-            <p class="admin-message">
-                <?php echo htmlspecialchars($message); ?>
-            </p>
 
-        <?php endif; ?>
+    <?php if ($message): ?>
 
+        <div class="admin-message">
+            <?php echo htmlspecialchars($message); ?>
+        </div>
+
+    <?php endif; ?>
+
+
+    <div class="admin-form-card">
 
         <form method="POST" class="article-form">
 
-            <label>Article Title</label>
+            <div class="form-group">
 
-            <input
-                type="text"
-                name="title"
-                placeholder="Enter article title"
-                required
-            >
+                <label for="title">Article Title</label>
 
+                <input
+                    type="text"
+                    id="title"
+                    name="title"
+                    placeholder="Enter article title"
+                    required
+                >
 
-            <label>Category</label>
-
-            <select name="category" required>
-
-                <option value="">Select Category</option>
-
-                <option value="MMA">MMA</option>
-
-                <option value="MUAY THAI">Muay Thai</option>
-
-                <option value="BJJ">BJJ</option>
-
-                <option value="BOXING">Boxing</option>
-
-                <option value="KARATE">Karate</option>
-
-            </select>
+            </div>
 
 
-            <label>Image Path</label>
+            <div class="form-group">
 
-            <input
-                type="text"
-                name="image"
-                placeholder="assets/images/article1.jpg"
-                required
-            >
+                <label for="category">Category</label>
+
+                <select id="category" name="category" required>
+
+                    <option value="">Select Category</option>
+                    <option value="MMA">MMA</option>
+                    <option value="MUAY THAI">Muay Thai</option>
+                    <option value="BJJ">BJJ</option>
+                    <option value="BOXING">Boxing</option>
+                    <option value="KARATE">Karate</option>
+
+                </select>
+
+            </div>
 
 
-            <label>Article Content</label>
+            <div class="form-group">
 
-            <textarea
-                name="content"
-                rows="10"
-                placeholder="Write your article..."
-                required
-            ></textarea>
+                <label for="image">Image Path</label>
+
+                <input
+                    type="text"
+                    id="image"
+                    name="image"
+                    placeholder="assets/images/article1.jpg"
+                    required
+                >
+
+                <small>
+                    Example: assets/images/mma-training.jpg
+                </small>
+
+            </div>
+
+
+            <div class="form-group">
+
+                <label for="content">Article Content</label>
+
+                <textarea
+                    id="content"
+                    name="content"
+                    rows="12"
+                    placeholder="Write your article..."
+                    required
+                ></textarea>
+
+            </div>
 
 
             <label class="checkbox-label">
@@ -164,18 +182,28 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
                     name="is_featured"
                 >
 
-                Featured Article
+                <span>Show this article in Featured Articles</span>
 
             </label>
 
 
-            <button type="submit">
-                Add Article
-            </button>
+            <div class="form-buttons">
+
+                <button type="submit" class="admin-btn">
+                    Add Article
+                </button>
+
+                <a href="manage-articles.php" class="cancel-btn">
+                    Cancel
+                </a>
+
+            </div>
 
         </form>
 
     </div>
+
+</div>
 
 </body>
 

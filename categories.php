@@ -2,13 +2,28 @@
 
 require_once "config/database.php";
 
-$category = $_GET["category"] ?? "";
 
-if ($category !== "") {
+// Allowed categories
+$allowed_categories = [
+    "MMA",
+    "MUAY THAI",
+    "BJJ",
+    "BOXING",
+    "KARATE"
+];
+
+
+// Get selected category
+$category = strtoupper(trim($_GET["category"] ?? ""));
+
+
+// If valid category selected
+if ($category !== "" && in_array($category, $allowed_categories, true)) {
 
     $stmt = $conn->prepare(
-        "SELECT * FROM articles
-         WHERE category = ?
+        "SELECT *
+         FROM articles
+         WHERE UPPER(TRIM(category)) = ?
          ORDER BY created_at DESC"
     );
 
@@ -20,11 +35,14 @@ if ($category !== "") {
 
 } else {
 
+    // Show all articles
+    $category = "";
+
     $result = $conn->query(
-        "SELECT * FROM articles
+        "SELECT *
+         FROM articles
          ORDER BY created_at DESC"
     );
-
 }
 
 ?>
@@ -41,148 +59,220 @@ if ($category !== "") {
 
     <title>Categories - Martial Arts Hub</title>
 
-    <link rel="stylesheet"
-          href="assets/css/style.css">
+    <link rel="stylesheet" href="assets/css/style.css">
 
 </head>
 
 <body>
 
-    <header>
 
-        <nav class="navbar">
+<!-- NAVBAR -->
 
-            <h1>Martial Arts Hub</h1>
+<header class="categories-header">
 
-            <ul>
+    <nav class="categories-navbar">
 
-                <li><a href="index.php">Home</a></li>
-
-                <li><a href="categories.php">
-                    Categories
-                </a></li>
-
-                <li><a href="index.php">
-                    Fighters
-                </a></li>
-
-                <li><a href="index.php">
-                    About
-                </a></li>
-
-            </ul>
-
-        </nav>
-
-    </header>
+        <a href="index.php" class="categories-logo">
+            Martial Arts Hub
+        </a>
 
 
-    <main class="categories-page">
+        <ul class="categories-nav">
 
-        <div class="section-title">
+            <li>
+                <a href="index.php">Home</a>
+            </li>
 
-            <p>EXPLORE</p>
+            <li>
+                <a href="categories.php">Categories</a>
+            </li>
 
-            <h2>
-                Martial Arts Categories
-            </h2>
+            <li>
+                <a href="fighters.php">Fighters</a>
+            </li>
 
-            <span>
-                Explore articles from different martial arts.
-            </span>
+            <li>
+                <a href="index.php#about">About</a>
+            </li>
 
-        </div>
+        </ul>
 
+    </nav>
 
-        <div class="category-buttons">
-
-            <a href="categories.php">
-                All
-            </a>
-
-            <a href="categories.php?category=MMA">
-                MMA
-            </a>
-
-            <a href="categories.php?category=MUAY%20THAI">
-                Muay Thai
-            </a>
-
-            <a href="categories.php?category=BJJ">
-                BJJ
-            </a>
-
-            <a href="categories.php?category=BOXING">
-                Boxing
-            </a>
-
-            <a href="categories.php?category=KARATE">
-                Karate
-            </a>
-
-        </div>
+</header>
 
 
-        <div class="article-grid">
 
-            <?php if ($result->num_rows > 0): ?>
+<main class="categories-main">
 
-                <?php while ($article = $result->fetch_assoc()): ?>
 
-                    <article class="article-card">
+    <!-- TITLE -->
 
-                        <img
-                            src="<?php echo htmlspecialchars($article["image"]); ?>"
-                            alt="<?php echo htmlspecialchars($article["title"]); ?>"
+    <div class="categories-heading">
+
+        <p>EXPLORE</p>
+
+        <h1>Martial Arts Categories</h1>
+
+        <span>
+            Explore articles from different martial arts.
+        </span>
+
+    </div>
+
+
+
+    <!-- FILTER BUTTONS -->
+
+    <div class="categories-filters">
+
+        <a
+            href="categories.php"
+            class="<?php echo $category === "" ? "active" : ""; ?>"
+        >
+            All
+        </a>
+
+
+        <a
+            href="categories.php?category=MMA"
+            class="<?php echo $category === "MMA" ? "active" : ""; ?>"
+        >
+            MMA
+        </a>
+
+
+        <a
+            href="categories.php?category=MUAY%20THAI"
+            class="<?php echo $category === "MUAY THAI" ? "active" : ""; ?>"
+        >
+            Muay Thai
+        </a>
+
+
+        <a
+            href="categories.php?category=BJJ"
+            class="<?php echo $category === "BJJ" ? "active" : ""; ?>"
+        >
+            BJJ
+        </a>
+
+
+        <a
+            href="categories.php?category=BOXING"
+            class="<?php echo $category === "BOXING" ? "active" : ""; ?>"
+        >
+            Boxing
+        </a>
+
+
+        <a
+            href="categories.php?category=KARATE"
+            class="<?php echo $category === "KARATE" ? "active" : ""; ?>"
+        >
+            Karate
+        </a>
+
+    </div>
+
+
+
+    <!-- ARTICLES -->
+
+    <div class="categories-results-grid">
+
+        <?php if ($result && $result->num_rows > 0): ?>
+
+
+            <?php while ($article = $result->fetch_assoc()): ?>
+
+                <article class="categories-article-card">
+
+
+                    <img
+                        src="<?php echo htmlspecialchars($article["image"]); ?>"
+                        alt="<?php echo htmlspecialchars($article["title"]); ?>"
+                    >
+
+
+                    <div class="categories-article-content">
+
+
+                        <span class="categories-article-category">
+
+                            <?php
+                            echo htmlspecialchars(
+                                $article["category"]
+                            );
+                            ?>
+
+                        </span>
+
+
+                        <h2>
+
+                            <?php
+                            echo htmlspecialchars(
+                                $article["title"]
+                            );
+                            ?>
+
+                        </h2>
+
+
+                        <p>
+
+                            <?php
+
+                            echo htmlspecialchars(
+                                substr($article["content"], 0, 150)
+                            );
+
+                            ?>...
+
+                        </p>
+
+
+                        <a
+                            href="article.php?id=<?php echo $article["id"]; ?>"
+                            class="categories-read-btn"
                         >
+                            Read Article →
+                        </a>
 
-                        <div class="article-content">
 
-                            <span class="category">
+                    </div>
 
-                                <?php echo htmlspecialchars($article["category"]); ?>
+                </article>
 
-                            </span>
+            <?php endwhile; ?>
 
-                            <h3>
 
-                                <?php echo htmlspecialchars($article["title"]); ?>
+        <?php else: ?>
 
-                            </h3>
 
-                            <p>
+            <div class="categories-no-results">
 
-                                <?php
+                <h2>No articles found</h2>
 
-                                echo htmlspecialchars(
-                                    substr($article["content"], 0, 150)
-                                );
+                <p>
+                    There are currently no articles in this category.
+                </p>
 
-                                ?>...
+                <a href="categories.php">
+                    View All Articles
+                </a>
 
-                            </p>
+            </div>
 
-                            <a href="article.php?id=<?php echo $article["id"]; ?>">
 
-                                Read Article →
+        <?php endif; ?>
 
-                            </a>
+    </div>
 
-                        </div>
 
-                    </article>
+</main>
 
-                <?php endwhile; ?>
-
-            <?php else: ?>
-
-                <p>No articles found in this category.</p>
-
-            <?php endif; ?>
-
-        </div>
-
-    </main>
 
 </body>
 

@@ -33,6 +33,7 @@ $comment_count = $conn->query("SELECT COUNT(*) AS total FROM comments")->fetch_a
     <title>Admin Dashboard - Martial Arts Hub</title>
 
     <link rel="stylesheet" href="assets/css/style.css">
+    <link rel="stylesheet" href="assets/css/admin.css">
 
 </head>
 
@@ -86,19 +87,19 @@ $comment_count = $conn->query("SELECT COUNT(*) AS total FROM comments")->fetch_a
                     <p>Add, edit and delete articles.</p>
                 </a>
 
-                <a href="#" class="admin-card">
+                <a href="manage-featured.php" class="admin-card">
                     <span>⭐</span>
                     <h3>Featured Articles</h3>
                     <p>Manage articles shown on the homepage.</p>
                 </a>
 
-                <a href="#" class="admin-card">
+                <a href="manage-users.php" class="admin-card">
                     <span>👥</span>
                     <h3>Users</h3>
                     <p>View registered users.</p>
                 </a>
 
-                <a href="#" class="admin-card">
+                <a href="manage-comments.php" class="admin-card">
                     <span>💬</span>
                     <h3>Comments</h3>
                     <p>Manage user comments.</p>

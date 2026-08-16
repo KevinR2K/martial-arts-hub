@@ -4,7 +4,7 @@ require_once "config/api.php";
 
 
 // Get search term
-$query = $_GET['search'] ?? '';
+$query = $_GET["search"] ?? "";
 
 $fighters = [];
 
@@ -32,12 +32,9 @@ if (!empty($query)) {
 
 
     // Get fighters from response
-    if (isset($data['data']['fighters'])) {
-
-        $fighters = $data['data']['fighters'];
-
+    if (isset($data["data"]["fighters"])) {
+        $fighters = $data["data"]["fighters"];
     }
-
 }
 
 ?>
@@ -53,21 +50,76 @@ if (!empty($query)) {
 
     <title>Fighters - Martial Arts Hub</title>
 
-</head>
+    <link rel="stylesheet" href="assets/css/style.css">
 
+</head>
 
 <body>
 
-    <h1>Fighters</h1>
+
+<!-- NAVBAR -->
+
+<header class="fighter-page-header">
+
+    <nav class="fighter-page-navbar">
+
+        <a href="index.php" class="fighter-page-logo">
+            Martial Arts Hub
+        </a>
+
+        <ul class="fighter-page-nav">
+
+            <li>
+                <a href="index.php">Home</a>
+            </li>
+
+            <li>
+                <a href="categories.php">Categories</a>
+            </li>
+
+            <li>
+                <a href="fighters.php">Fighters</a>
+            </li>
+
+            <li>
+                <a href="index.php#about">About</a>
+            </li>
+
+        </ul>
+
+    </nav>
+
+</header>
 
 
-    <form method="GET">
+<main class="fighters-page">
+
+
+    <!-- TITLE -->
+
+    <div class="fighters-page-title">
+
+        <p>FIGHTER DATABASE</p>
+
+        <h1>Find UFC Fighters</h1>
+
+        <span>
+            Search for fighters and explore their records and profiles.
+        </span>
+
+    </div>
+
+
+    <!-- SEARCH -->
+
+    <form method="GET" class="fighters-search-form">
 
         <input
             type="text"
             name="search"
-            placeholder="Search fighter..."
+            placeholder="Enter fighter name..."
             value="<?php echo htmlspecialchars($query); ?>"
+            required
         >
 
         <button type="submit">
@@ -77,58 +129,128 @@ if (!empty($query)) {
     </form>
 
 
+
     <?php if (!empty($query)): ?>
 
-        <h2>Search Results</h2>
+
+        <div class="fighters-results-header">
+
+            <h2>Search Results</h2>
+
+            <p>
+                Results for
+                <strong>
+                    "<?php echo htmlspecialchars($query); ?>"
+                </strong>
+            </p>
+
+        </div>
 
 
         <?php if (!empty($fighters)): ?>
 
-            <?php foreach ($fighters as $fighter): ?>
 
-                <div>
+            <div class="fighters-results-grid">
 
-                    <?php if (!empty($fighter['imageUrl'])): ?>
 
-    <img
-        src="<?php echo htmlspecialchars($fighter['imageUrl']); ?>"
-        alt="<?php echo htmlspecialchars($fighter['name']); ?>"
-        width="200"
-    >
+                <?php foreach ($fighters as $fighter): ?>
 
-<?php endif; ?>
 
-<h3>
-    <?php echo htmlspecialchars($fighter['name']); ?>
-</h3>
+                    <article class="fighter-result-card">
 
-<p>
-    Division:
-    <?php echo htmlspecialchars($fighter['division'] ?? 'N/A'); ?>
-</p>
 
-<p>
-    Record:
-    <?php echo htmlspecialchars($fighter['recordText'] ?? 'N/A'); ?>
-</p>
-<a href="fighter.php?slug=<?php echo urlencode($fighter['slug']); ?>">
-    View Profile
-</a>
+                        <div class="fighter-result-image">
 
-                </div>
+                            <?php if (!empty($fighter["imageUrl"])): ?>
 
-                <hr>
+                                <img
+                                    src="<?php echo htmlspecialchars($fighter["imageUrl"]); ?>"
+                                    alt="<?php echo htmlspecialchars($fighter["name"]); ?>"
+                                >
 
-            <?php endforeach; ?>
+                            <?php else: ?>
+
+                                <div class="fighter-no-image">
+                                    No Image
+                                </div>
+
+                            <?php endif; ?>
+
+                        </div>
+
+
+                        <div class="fighter-result-content">
+
+
+                            <span class="fighter-division">
+
+                                <?php echo htmlspecialchars(
+                                    $fighter["division"] ?? "UFC Fighter"
+                                ); ?>
+
+                            </span>
+
+
+                            <h3>
+
+                                <?php echo htmlspecialchars(
+                                    $fighter["name"]
+                                ); ?>
+
+                            </h3>
+
+
+                            <p>
+
+                                <strong>Record:</strong>
+
+                                <?php echo htmlspecialchars(
+                                    $fighter["recordText"] ?? "N/A"
+                                ); ?>
+
+                            </p>
+
+
+                            <a
+                                href="fighter.php?slug=<?php echo urlencode($fighter["slug"]); ?>"
+                                class="fighter-profile-btn"
+                            >
+                                View Profile →
+                            </a>
+
+
+                        </div>
+
+                    </article>
+
+
+                <?php endforeach; ?>
+
+
+            </div>
+
 
         <?php else: ?>
 
-            <p>No fighters found.</p>
+
+            <div class="fighters-empty">
+
+                <h3>No fighters found</h3>
+
+                <p>
+                    Try searching with another fighter name.
+                </p>
+
+            </div>
+
 
         <?php endif; ?>
 
 
     <?php endif; ?>
+
+
+</main>
 
 
 </body>
