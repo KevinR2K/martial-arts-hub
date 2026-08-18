@@ -24,41 +24,78 @@ $result = $conn->query($sql);
 <body>
     <header class="header">
         <nav class="navbar">
-            <h1 class="logo">Martial Arts Hub</h1>
-            <ul class="nav-links">
-                <li><a href="#">Home</a></li>
-                <li><a href="#">Articales</a></li>
-                <li><a href="#">Fighters</a></li>
-                <li><a href="categories.php">Categories</a></li>
-                <li><a href="#">About</a></li>
-                <li><a href="#">Login</a></li>
-                <li><a href="#">Signup</a></li>
-            </ul>
 
-              <div class="auth-buttons">
+    <a href="index.php" class="logo">
+        Martial Arts Hub
+    </a>
 
-    <?php if (isset($_SESSION["user_id"])): ?>
+    <ul class="nav-links">
 
-        <a href="account.php" class="login-btn">
-            👤 My Account
-        </a>
+        <li>
+            <a href="index.php">Home</a>
+        </li>
 
-        <a href="logout.php" class="signup-btn">
-            Logout
-        </a>
+        <li>
+            <a href="categories.php">Articles</a>
+        </li>
 
-    <?php else: ?>
+        <li>
+            <a href="fighters.php">Fighters</a>
+        </li>
 
-        <a href="login.php" class="login-btn">
-            Login
-        </a>
+        <li>
+            <a href="index.php#categories">Categories</a>
+        </li>
 
-        <a href="signup.php" class="signup-btn">
-            Sign Up
-        </a>
+        <li>
+            <a href="index.php#about">About</a>
+        </li>
 
-    <?php endif; ?>
+    </ul>
 
+
+    <div class="auth-buttons">
+
+        <?php if (isset($_SESSION["user_id"])): ?>
+
+            <?php if (
+                isset($_SESSION["role"]) &&
+                $_SESSION["role"] === "admin"
+            ): ?>
+
+                <a href="admin.php" class="login-btn">
+                    Admin
+                </a>
+
+            <?php endif; ?>
+
+
+            <a href="account.php" class="login-btn">
+                👤 My Account
+            </a>
+
+            <a href="logout.php" class="signup-btn">
+                Logout
+            </a>
+
+
+        <?php else: ?>
+
+            <a href="login.php" class="login-btn">
+                Login
+            </a>
+
+            <a href="signup.php" class="signup-btn">
+                Sign Up
+            </a>
+
+        <?php endif; ?>
+
+    </div>
+
+</nav>
+
+    
 </div>
 
         </nav>
@@ -74,7 +111,7 @@ $result = $conn->query($sql);
             and training guides from the world of Martial Arts.
         </p>
 
-        <a href="#" class="hero-btn">Explore Articles</a>
+        
 
     </div>
 
@@ -144,7 +181,7 @@ $result = $conn->query($sql);
 </section>
 <!-- CATEGORIES -->
 
-<section class="categories">
+<section class="categories" id="categories">
 
     <div class="section-title">
         <p>EXPLORE</p>
@@ -319,44 +356,67 @@ $fallbackImages = [
 </section>
 <!-- ABOUT -->
 
-<section class="about">
+<!-- ABOUT -->
 
-    <div class="about-image">
-        <img src="assets/images/about.jpg" alt="Martial arts training">
-    </div>
+<section class="about-section" id="about">
 
-    <div class="about-content">
+    <div class="about-container">
 
-        <p class="about-label">ABOUT US</p>
+        <div class="about-image reveal-left">
 
-        <h2>Your Source for the World of Martial Arts.</h2>
+            <img
+                src="assets/images/about.jpg"
+                alt="Martial arts training"
+            >
 
-        <p>
-            Martial Arts Hub is a platform created for people who
-            are passionate about combat sports and martial arts.
-        </p>
+            <div class="about-image-overlay"></div>
 
-        <p>
-            Explore articles, fighter profiles, training insights,
-            techniques and the latest news from the world of martial arts.
-        </p>
+        </div>
 
-        <div class="about-features">
 
-            <div>
-                <strong>01</strong>
-                <span>Martial Arts Articles</span>
+        <div class="about-content reveal-right">
+
+            <p class="about-label">ABOUT US</p>
+
+            <h2>
+                More Than Fighting.
+                <span>A Martial Arts Community.</span>
+            </h2>
+
+            <p>
+                Martial Arts Hub is a platform for combat sports fans
+                to discover martial arts articles, explore UFC fighter
+                profiles and stay updated with the latest MMA news.
+            </p>
+
+            <p>
+                Whether you follow MMA, Boxing, Muay Thai, BJJ or Karate,
+                our goal is to bring useful martial arts content together
+                in one place.
+            </p>
+
+            <div class="about-features">
+
+                <div>
+                    <strong>🥋</strong>
+                    <span>Martial Arts Articles</span>
+                </div>
+
+                <div>
+                    <strong>🥊</strong>
+                    <span>Fighter Profiles</span>
+                </div>
+
+                <div>
+                    <strong>📰</strong>
+                    <span>Latest MMA News</span>
+                </div>
+
             </div>
 
-            <div>
-                <strong>02</strong>
-                <span>Fighter Profiles</span>
-            </div>
-
-            <div>
-                <strong>03</strong>
-                <span>Latest Combat Sports News</span>
-            </div>
+            <a href="categories.php" class="about-btn">
+                Explore Articles →
+            </a>
 
         </div>
 
@@ -366,7 +426,7 @@ $fallbackImages = [
 
 <!-- FOOTER -->
 
-<footer class="footer">
+<<footer class="footer">
 
     <div class="footer-container">
 
@@ -374,10 +434,14 @@ $fallbackImages = [
 
         <div class="footer-brand">
 
-            <h2>Martial Arts Hub</h2>
+            <h2>
+                <a href="index.php">
+                    Martial Arts Hub
+                </a>
+            </h2>
 
             <p>
-                Your source for martial arts articles, fighter stories,
+                Your source for martial arts articles, fighter profiles,
                 training insights and combat sports news.
             </p>
 
@@ -390,10 +454,25 @@ $fallbackImages = [
 
             <h3>Quick Links</h3>
 
-            <a href="#">Home</a>
-            <a href="#">Articles</a>
-            <a href="#">Fighters</a>
-            <a href="#">Categories</a>
+            <a href="index.php">
+                Home
+            </a>
+
+            <a href="categories.php">
+                Articles
+            </a>
+
+            <a href="fighters.php">
+                Fighters
+            </a>
+
+            <a href="index.php#categories">
+                Categories
+            </a>
+
+            <a href="index.php#about">
+                About
+            </a>
 
         </div>
 
@@ -404,10 +483,25 @@ $fallbackImages = [
 
             <h3>Categories</h3>
 
-            <a href="#">MMA</a>
-            <a href="#">Boxing</a>
-            <a href="#">Muay Thai</a>
-            <a href="#">Brazilian Jiu-Jitsu</a>
+            <a href="categories.php?category=MMA">
+                MMA
+            </a>
+
+            <a href="categories.php?category=BOXING">
+                Boxing
+            </a>
+
+            <a href="categories.php?category=MUAY%20THAI">
+                Muay Thai
+            </a>
+
+            <a href="categories.php?category=BJJ">
+                Brazilian Jiu-Jitsu
+            </a>
+
+            <a href="categories.php?category=KARATE">
+                Karate
+            </a>
 
         </div>
 
@@ -418,10 +512,47 @@ $fallbackImages = [
 
             <h3>Account</h3>
 
-            <a href="login.php">Login</a>
-            <a href="signup.php">Sign Up</a>
-            <a href="#">About Us</a>
-            <a href="#">Contact</a>
+
+            <?php if (isset($_SESSION["user_id"])): ?>
+
+                <a href="account.php">
+                    My Account
+                </a>
+
+
+                <?php if (
+                    isset($_SESSION["role"]) &&
+                    $_SESSION["role"] === "admin"
+                ): ?>
+
+                    <a href="admin.php">
+                        Admin Dashboard
+                    </a>
+
+                <?php endif; ?>
+
+
+                <a href="logout.php">
+                    Logout
+                </a>
+
+
+            <?php else: ?>
+
+                <a href="login.php">
+                    Login
+                </a>
+
+                <a href="signup.php">
+                    Sign Up
+                </a>
+
+            <?php endif; ?>
+
+
+            <a href="index.php#about">
+                About Us
+            </a>
 
         </div>
 
@@ -435,7 +566,7 @@ $fallbackImages = [
         </p>
 
         <p>
-            Built with HTML, CSS, JavaScript & PHP.
+            Built with HTML, CSS, JavaScript, PHP & MySQL.
         </p>
 
     </div>
