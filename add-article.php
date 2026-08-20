@@ -17,46 +17,167 @@ if (!isset($_SESSION["user_id"]) || $_SESSION["role"] !== "admin") {
 $message = "";
 
 
-// When the form is submitted
 if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
     $title = trim($_POST["title"]);
     $category = trim($_POST["category"]);
     $content = trim($_POST["content"]);
-    $image = trim($_POST["image"]);
 
     $is_featured = isset($_POST["is_featured"]) ? 1 : 0;
 
-
-    // Insert article
-    $sql = "INSERT INTO articles
-            (title, category, content, image, is_featured)
-            VALUES (?, ?, ?, ?, ?)";
-
-    $stmt = $conn->prepare($sql);
-
-    $stmt->bind_param(
-        "ssssi",
-        $title,
-        $category,
-        $content,
-        $image,
-        $is_featured
-    );
+    $image = "";
 
 
-    if ($stmt->execute()) {
+    // =====================================
+    // IMAGE UPLOAD
+    // =====================================
 
-        $message = "Article added successfully!";
+    if (
+        isset($_FILES["image"]) &&
+        $_FILES["image"]["error"] === UPLOAD_ERR_OK
+    ) {
+
+        $file = $_FILES["image"];
+
+        // Maximum image size = 5MB
+        $max_size = 5 * 1024 * 1024;
+
+
+        if ($file["size"] > $max_size) {
+
+            $message = "Image must be smaller than 5MB.";
+
+        } else {
+
+            // Check real image type
+            $finfo = new finfo(FILEINFO_MIME_TYPE);
+
+            $mime_type = $finfo->file($file["tmp_name"]);
+
+
+            $allowed_types = [
+                "image/jpeg" => "jpg",
+                "image/png"  => "png",
+                "image/webp" => "webp"
+            ];
+
+
+            if (!isset($allowed_types[$mime_type])) {
+
+                $message = "Only JPG, PNG and WEBP images are allowed.";
+
+            } else {
+
+                $extension = $allowed_types[$mime_type];
+
+
+                // Create a unique image name
+                $filename =
+                    "article_" .
+                    time() .
+                    "_" .
+                    bin2hex(random_bytes(4)) .
+                    "." .
+                    $extension;
+
+
+                // uploads/articles folder
+                $upload_folder = __DIR__ . "/uploads/articles/";
+                    // Create upload folder automatically if it does not exist
+                     if (!is_dir($upload_folder)) {
+    
+    // Main uploads folder
+$uploads_folder = __DIR__ . DIRECTORY_SEPARATOR . "uploads";
+
+// Articles folder
+$upload_folder = $uploads_folder . DIRECTORY_SEPARATOR . "articles";
+
+
+// Create articles folder if it does not exist
+if (!is_dir($upload_folder)) {
+
+    if (!mkdir($upload_folder)) {
+
+        die("Could not create articles upload folder.");
+
+    }
+}
+
+
+// Final image location
+$destination =
+    $upload_folder .
+    DIRECTORY_SEPARATOR .
+    $filename;
+}
+
+
+                // Final image location
+                $destination =
+                    $upload_folder . $filename;
+
+
+                // Move image from temporary folder
+                if (
+                    move_uploaded_file(
+                        $file["tmp_name"],
+                        $destination
+                    )
+                ) {
+
+                    // Save this path in MySQL
+                    $image =
+                        "uploads/articles/" .
+                        $filename;
+
+                } else {
+
+                    $message = "Image upload failed.";
+                }
+            }
+        }
 
     } else {
 
-        $message = "Error adding article.";
-
+        $message = "Please select an article image.";
     }
 
-    $stmt->close();
 
+
+    // =====================================
+    // INSERT ARTICLE INTO DATABASE
+    // =====================================
+
+    if ($image !== "") {
+
+        $sql = "INSERT INTO articles
+                (title, category, content, image, is_featured)
+                VALUES (?, ?, ?, ?, ?)";
+
+        $stmt = $conn->prepare($sql);
+
+        $stmt->bind_param(
+            "ssssi",
+            $title,
+            $category,
+            $content,
+            $image,
+            $is_featured
+        );
+
+
+        if ($stmt->execute()) {
+
+            $message = "Article added successfully!";
+
+        } else {
+
+            $message = "Error adding article.";
+        }
+
+
+        $stmt->close();
+    }
 }
 
 ?>
@@ -106,7 +227,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
     <div class="admin-form-card">
 
-        <form method="POST" class="article-form">
+       <form method="POST" enctype="multipart/form-data" class="article-form">
 
             <div class="form-group">
 
@@ -143,21 +264,21 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
             <div class="form-group">
 
-                <label for="image">Image Path</label>
+    <label for="image">Article Image</label>
 
-                <input
-                    type="text"
-                    id="image"
-                    name="image"
-                    placeholder="assets/images/article1.jpg"
-                    required
-                >
+    <input
+        type="file"
+        id="image"
+        name="image"
+        accept=".jpg,.jpeg,.png,.webp"
+        required
+    >
 
-                <small>
-                    Example: assets/images/mma-training.jpg
-                </small>
+    <small>
+        JPG, PNG or WEBP. Maximum 5 MB.
+    </small>
 
-            </div>
+</div>
 
 
             <div class="form-group">

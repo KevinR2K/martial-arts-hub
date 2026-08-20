@@ -159,13 +159,13 @@ $result = $conn->query($sql);
                         href="save-article.php?article_id=<?php echo $article["id"]; ?>"
                         class="save-btn"
                     >
-                        ❤️ Save Article
+                        📌 Save Article
                     </a>
 
                 <?php else: ?>
 
                     <a href="login.php" class="save-btn">
-                        ❤️ Login to Save
+                        📌 Login to Save
                     </a>
 
                 <?php endif; ?>
