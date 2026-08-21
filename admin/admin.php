@@ -2,12 +2,12 @@
 
 session_start();
 
-require_once "config/database.php";
+require_once "../config/database.php";
 
 
 // Protect admin page
 if (!isset($_SESSION["user_id"]) || $_SESSION["role"] !== "admin") {
-    header("Location: index.php");
+  header("Location: ../index.php");
     exit();
 }
 
@@ -32,8 +32,8 @@ $comment_count = $conn->query("SELECT COUNT(*) AS total FROM comments")->fetch_a
 
     <title>Admin Dashboard - Martial Arts Hub</title>
 
-    <link rel="stylesheet" href="assets/css/style.css">
-    <link rel="stylesheet" href="assets/css/admin.css">
+    <link rel="stylesheet" href="../assets/css/style.css">
+<link rel="stylesheet" href="../assets/css/admin.css">>
 
 </head>
 
@@ -48,7 +48,7 @@ $comment_count = $conn->query("SELECT COUNT(*) AS total FROM comments")->fetch_a
                 <p>Welcome back, Admin.</p>
             </div>
 
-            <a href="index.php" class="admin-back">
+            <a href="../index.php" class="admin-back">
                 ← Back to Website
             </a>
 

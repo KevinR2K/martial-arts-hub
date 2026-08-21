@@ -2,12 +2,12 @@
 
 session_start();
 
-require_once "config/database.php";
+require_once "../config/database.php";
 
 
 // Only admins can delete articles
 if (!isset($_SESSION["user_id"]) || $_SESSION["role"] !== "admin") {
-    header("Location: index.php");
+    header("Location: ../index.php");
     exit();
 }
 

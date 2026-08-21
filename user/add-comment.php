@@ -2,15 +2,14 @@
 
 session_start();
 
-require_once "config/database.php";
+require_once "../config/database.php";
 
 
 // Make sure the user is logged in
 if (!isset($_SESSION["user_id"])) {
 
-    header("Location: login.php");
+    header("Location: ../auth/login.php");
     exit();
-
 }
 
 
@@ -27,7 +26,6 @@ if ($comment === "") {
 
     echo "Comment cannot be empty.";
     exit();
-
 }
 
 
@@ -47,7 +45,6 @@ if ($result->num_rows == 0) {
 
     echo "Article not found.";
     exit();
-
 }
 
 $stmt->close();
@@ -64,13 +61,12 @@ $stmt->bind_param("iis", $user_id, $article_id, $comment);
 
 if ($stmt->execute()) {
 
-    header("Location: article.php?id=" . $article_id);
+    header("Location: ../article.php?id=" . $article_id);
     exit();
 
 } else {
 
     echo "Could not add comment.";
-
 }
 
 $stmt->close();

@@ -124,13 +124,13 @@ $stmt->close();
 
             <?php if (isset($_SESSION["user_id"])): ?>
 
-                <a href="account.php">
+                <a href="user/account.php">
                     👤 My Account
                 </a>
 
             <?php else: ?>
 
-                <a href="login.php">
+                <a href="auth/login.php">
                     Login
                 </a>
 
@@ -228,7 +228,7 @@ $stmt->close();
             <?php if (isset($_SESSION["user_id"])): ?>
 
                 <a
-                    href="save-article.php?article_id=<?php echo $article["id"]; ?>"
+                    href="user/save-article.php?article_id=<?php echo $article["id"]; ?>"
                     class="article-save-btn"
                 >
                     ❤️ Save Article
@@ -237,7 +237,7 @@ $stmt->close();
             <?php else: ?>
 
                 <a
-                    href="login.php"
+                    href="auth/login.php"
                     class="article-save-btn"
                 >
                     ❤️ Login to Save
@@ -283,7 +283,7 @@ $stmt->close();
 
 
             <form
-                action="add-comment.php"
+                action="user/add-comment.php"
                 method="POST"
                 class="article-comment-form"
             >
@@ -318,7 +318,7 @@ $stmt->close();
                     Want to join the discussion?
                 </p>
 
-                <a href="login.php">
+                <a href="auth/login.php">
                     Login to Comment
                 </a>
 
@@ -388,7 +388,7 @@ $stmt->close();
                             ): ?>
 
                                 <a
-                                    href="delete-comment.php?id=<?php echo $comment["id"]; ?>"
+                                    href="user/delete-comment.php?id=<?php echo $comment["id"]; ?>"
                                     class="article-delete-comment"
                                     onclick="return confirm('Delete this comment?');"
                                 >

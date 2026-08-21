@@ -2,7 +2,7 @@
 
 session_start();
 
-require_once "config/database.php";
+require_once "../config/database.php";
 
 $message = "";
 
@@ -17,7 +17,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
     } else {
 
-        $sql = "SELECT id, name, password, role FROM users WHERE email = ?";
+        $sql = "SELECT id, name, email, password, role
+                FROM users
+                WHERE email = ?";
 
         $stmt = $conn->prepare($sql);
 
@@ -40,15 +42,15 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
                 if ($user["role"] === "admin") {
 
-                   header("Location: admin.php");
-                exit();
+                    header("Location: ../admin/admin.php");
+                    exit();
 
                 } else {
 
-                   header("Location: index.php");
-                exit();
+                    header("Location: ../index.php");
+                    exit();
 
-}
+                }
 
             } else {
 
@@ -73,11 +75,14 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
     <meta charset="UTF-8">
 
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
 
     <title>Login - Martial Arts Hub</title>
 
-    <link rel="stylesheet" href="assets/css/style.css">
+    <link rel="stylesheet" href="../assets/css/style.css">
 
 </head>
 

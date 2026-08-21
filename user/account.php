@@ -2,12 +2,12 @@
 
 session_start();
 
-require_once "config/database.php";
+require_once "../config/database.php";
 
 
 // Protect account page
 if (!isset($_SESSION["user_id"])) {
-    header("Location: login.php");
+    header("Location: ../auth/login.php");
     exit();
 }
 
@@ -124,7 +124,7 @@ $stmt->close();
 
     <title>My Account - Martial Arts Hub</title>
 
-    <link rel="stylesheet" href="assets/css/style.css">
+    <link rel="stylesheet" href="../assets/css/style.css">
 
 </head>
 
@@ -137,30 +137,30 @@ $stmt->close();
 
     <nav class="account-navbar">
 
-        <a href="index.php" class="account-logo">
+        <a href="../index.php" class="account-logo">
             Martial Arts Hub
         </a>
 
         <ul class="account-nav">
 
             <li>
-                <a href="index.php">Home</a>
+                <a href="../index.php">Home</a>
             </li>
 
             <li>
-                <a href="categories.php">Categories</a>
+                <a href="../categories.php">Categories</a>
             </li>
 
             <li>
-                <a href="fighters.php">Fighters</a>
+                <a href="../fighters.php">Fighters</a>
             </li>
 
             <li>
-                <a href="index.php#about">About</a>
+                <a href="../index.php#about">About</a>
             </li>
 
             <li>
-                <a href="logout.php">Logout</a>
+                <a href="../auth/logout.php">Logout</a>
             </li>
 
         </ul>
@@ -293,7 +293,7 @@ $stmt->close();
 
 
                         <img
-                            src="<?php echo htmlspecialchars($article["image"]); ?>"
+                            src="../<?php echo htmlspecialchars(ltrim($article["image"], "/")); ?>"
                             alt="<?php echo htmlspecialchars($article["title"]); ?>"
                         >
 
@@ -320,7 +320,7 @@ $stmt->close();
 
 
                             <a
-                                href="article.php?id=<?php echo $article["id"]; ?>"
+                                href="../article.php?id=<?php echo $article["id"]; ?>"
                                 class="account-action-link"
                             >
                                 Read Article →
@@ -349,7 +349,7 @@ $stmt->close();
                     Save articles you want to read again later.
                 </p>
 
-                <a href="categories.php">
+                <a href="../categories.php">
                     Explore Articles
                 </a>
 
@@ -436,7 +436,7 @@ $stmt->close();
 
 
                             <a
-                                href="fighter.php?slug=<?php echo urlencode($fighter["fighter_slug"]); ?>"
+                                href="../fighter.php?slug=<?php echo urlencode($fighter["fighter_slug"]); ?>"
                                 class="account-action-link"
                             >
                                 View Profile →
@@ -465,7 +465,7 @@ $stmt->close();
                     Search the fighter database and follow your favorites.
                 </p>
 
-                <a href="fighters.php">
+                <a href="../fighters.php">
                     Explore Fighters
                 </a>
 
@@ -558,7 +558,7 @@ $stmt->close();
 
 
                         <a
-                            href="article.php?id=<?php echo $comment["article_id"]; ?>"
+                            href="../article.php?id=<?php echo $comment["article_id"]; ?>"
                             class="account-action-link"
                         >
                             View Article →
@@ -585,7 +585,7 @@ $stmt->close();
                     Comments you post on articles will appear here.
                 </p>
 
-                <a href="categories.php">
+                <a href="../categories.php">
                     Explore Articles
                 </a>
 
@@ -611,7 +611,7 @@ $stmt->close();
 
     <div class="account-logout-area">
 
-        <a href="logout.php">
+        <a href="../auth/logout.php">
             🚪 Logout
         </a>
 

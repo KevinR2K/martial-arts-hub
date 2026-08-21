@@ -2,12 +2,12 @@
 
 session_start();
 
-require_once "config/database.php";
+require_once "../config/database.php";
 
 
 // Make sure the user is logged in
 if (!isset($_SESSION["user_id"])) {
-    header("Location: login.php");
+    header("Location: ../auth/login.php");
     exit();
 }
 
@@ -24,7 +24,7 @@ $fighter_image = $_POST["fighter_image"] ?? "";
 
 // Make sure we received the fighter
 if (empty($fighter_slug) || empty($fighter_name)) {
-    header("Location: index.php");
+    header("Location: ../index.php");
     exit();
 }
 
@@ -50,7 +50,7 @@ $stmt->close();
 
 
 // Return to fighter profile
-header("Location: fighter.php?slug=" . urlencode($fighter_slug));
+header("Location: ../fighter.php?slug=" . urlencode($fighter_slug));
 exit();
 
 ?>

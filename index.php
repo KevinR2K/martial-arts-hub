@@ -63,29 +63,29 @@ $result = $conn->query($sql);
                 $_SESSION["role"] === "admin"
             ): ?>
 
-                <a href="admin.php" class="login-btn">
+                <a href="admin/admin.php" class="login-btn">
                     Admin
                 </a>
 
             <?php endif; ?>
 
 
-            <a href="account.php" class="login-btn">
+            <a href="user/account.php" class="login-btn">
                 👤 My Account
             </a>
 
-            <a href="logout.php" class="signup-btn">
+            <a href="auth/logout.php" class="signup-btn">
                 Logout
             </a>
 
 
         <?php else: ?>
 
-            <a href="login.php" class="login-btn">
+            <a href="auth/login.php" class="login-btn">
                 Login
             </a>
 
-            <a href="signup.php" class="signup-btn">
+            <a href="auth/signup.php" class="signup-btn">
                 Sign Up
             </a>
 
@@ -156,7 +156,7 @@ $result = $conn->query($sql);
                 <?php if (isset($_SESSION["user_id"])): ?>
 
                     <a
-                        href="save-article.php?article_id=<?php echo $article["id"]; ?>"
+                        href="user/save-article.php?article_id=<?php echo $article["id"]; ?>"
                         class="save-btn"
                     >
                         📌 Save Article
@@ -164,7 +164,7 @@ $result = $conn->query($sql);
 
                 <?php else: ?>
 
-                    <a href="login.php" class="save-btn">
+                    <a href="auth/login.php" class="save-btn">
                         📌 Login to Save
                     </a>
 
@@ -515,7 +515,7 @@ $fallbackImages = [
 
             <?php if (isset($_SESSION["user_id"])): ?>
 
-                <a href="account.php">
+                <a href="user/account.php">
                     My Account
                 </a>
 
@@ -525,25 +525,25 @@ $fallbackImages = [
                     $_SESSION["role"] === "admin"
                 ): ?>
 
-                    <a href="admin.php">
+                    <a href="admin/admin.php">
                         Admin Dashboard
                     </a>
 
                 <?php endif; ?>
 
 
-                <a href="logout.php">
+                <a href="auth/logout.php">
                     Logout
                 </a>
 
 
             <?php else: ?>
 
-                <a href="login.php">
+                <a href="auth/login.php">
                     Login
                 </a>
 
-                <a href="signup.php">
+                <a href="auth/signup.php">
                     Sign Up
                 </a>
 

@@ -2,12 +2,12 @@
 
 session_start();
 
-require_once "config/database.php";
+require_once "../config/database.php";
 
 
 // Protect admin page
 if (!isset($_SESSION["user_id"]) || $_SESSION["role"] !== "admin") {
-    header("Location: index.php");
+   header("Location: ../index.php");
     exit();
 }
 
@@ -31,9 +31,8 @@ $result = $conn->query("
 
     <title>Manage Users - Martial Arts Hub</title>
 
-    <link rel="stylesheet" href="assets/css/style.css">
-    <link rel="stylesheet" href="assets/css/admin.css">
-
+    <link rel="stylesheet" href="../assets/css/style.css">
+<link rel="stylesheet" href="../assets/css/admin.css">
 </head>
 
 <body>
