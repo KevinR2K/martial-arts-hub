@@ -4,11 +4,22 @@ session_start();
 
 require_once "../config/database.php";
 
+
 // Protect admin page
-if (!isset($_SESSION["user_id"]) || $_SESSION["role"] !== "admin") {
-   header("Location: ../index.php");
+if (
+    !isset($_SESSION["user_id"]) ||
+    $_SESSION["role"] !== "admin"
+) {
+    header("Location: ../index.php");
     exit();
 }
+
+
+// Create CSRF token
+if (empty($_SESSION["csrf_token"])) {
+    $_SESSION["csrf_token"] = bin2hex(random_bytes(32));
+}
+
 
 // Get all articles
 $sql = "SELECT id, title, category, is_featured, created_at
@@ -23,13 +34,19 @@ $result = $conn->query($sql);
 <html lang="en">
 
 <head>
+
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
 
     <title>Manage Articles - Admin</title>
 
     <link rel="stylesheet" href="../assets/css/style.css">
-<link rel="stylesheet" href="../assets/css/admin.css">>
+    <link rel="stylesheet" href="../assets/css/admin.css">
+
 </head>
 
 <body>
@@ -39,11 +56,19 @@ $result = $conn->query($sql);
     <header class="admin-header">
 
         <div>
+
             <h1>Manage Articles</h1>
-            <p>View and manage your website articles.</p>
+
+            <p>
+                View and manage your website articles.
+            </p>
+
         </div>
 
-        <a href="admin.php" class="admin-back">
+        <a
+            href="admin.php"
+            class="admin-back"
+        >
             ← Dashboard
         </a>
 
@@ -52,7 +77,10 @@ $result = $conn->query($sql);
 
     <div class="admin-toolbar">
 
-        <a href="add-article.php" class="admin-btn">
+        <a
+            href="add-article.php"
+            class="admin-btn"
+        >
             + Add New Article
         </a>
 
@@ -66,34 +94,54 @@ $result = $conn->query($sql);
             <thead>
 
                 <tr>
+
                     <th>ID</th>
+
                     <th>Title</th>
+
                     <th>Category</th>
+
                     <th>Featured</th>
+
                     <th>Actions</th>
+
                 </tr>
 
             </thead>
 
             <tbody>
 
-            <?php if ($result->num_rows > 0): ?>
+
+            <?php if ($result && $result->num_rows > 0): ?>
+
 
                 <?php while ($article = $result->fetch_assoc()): ?>
+
 
                     <tr>
 
                         <td>
-                            <?php echo $article["id"]; ?>
+                            <?php echo (int)$article["id"]; ?>
                         </td>
 
-                        <td>
-                            <?php echo htmlspecialchars($article["title"]); ?>
-                        </td>
 
                         <td>
-                            <?php echo htmlspecialchars($article["category"]); ?>
+                            <?php
+                            echo htmlspecialchars(
+                                $article["title"]
+                            );
+                            ?>
                         </td>
+
+
+                        <td>
+                            <?php
+                            echo htmlspecialchars(
+                                $article["category"]
+                            );
+                            ?>
+                        </td>
+
 
                         <td>
 
@@ -113,24 +161,47 @@ $result = $conn->query($sql);
 
                         </td>
 
+
                         <td>
 
                             <div class="table-actions">
 
+
                                 <a
-                                    href="edit-article.php?id=<?php echo $article["id"]; ?>"
+                                    href="edit-article.php?id=<?php echo (int)$article["id"]; ?>"
                                     class="admin-btn"
                                 >
                                     Edit
                                 </a>
 
-                                <a
-                                    href="delete-article.php?id=<?php echo $article["id"]; ?>"
-                                    class="admin-btn delete-btn"
-                                    onclick="return confirm('Are you sure you want to delete this article?');"
+
+                                <form
+                                    action="delete-article.php"
+                                    method="POST"
+                                    onsubmit="return confirm('Are you sure you want to delete this article?');"
                                 >
-                                    Delete
-                                </a>
+
+                                    <input
+                                        type="hidden"
+                                        name="article_id"
+                                        value="<?php echo (int)$article["id"]; ?>"
+                                    >
+
+                                    <input
+                                        type="hidden"
+                                        name="csrf_token"
+                                        value="<?php echo htmlspecialchars($_SESSION["csrf_token"]); ?>"
+                                    >
+
+                                    <button
+                                        type="submit"
+                                        class="admin-btn delete-btn"
+                                    >
+                                        Delete
+                                    </button>
+
+                                </form>
+
 
                             </div>
 
@@ -138,17 +209,27 @@ $result = $conn->query($sql);
 
                     </tr>
 
+
                 <?php endwhile; ?>
+
 
             <?php else: ?>
 
+
                 <tr>
-                    <td colspan="5" class="empty-message">
+
+                    <td
+                        colspan="5"
+                        class="empty-message"
+                    >
                         No articles found.
                     </td>
+
                 </tr>
 
+
             <?php endif; ?>
+
 
             </tbody>
 

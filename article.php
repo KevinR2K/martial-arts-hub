@@ -5,6 +5,12 @@ session_start();
 require_once "config/database.php";
 
 
+// Create CSRF token
+if (empty($_SESSION["csrf_token"])) {
+    $_SESSION["csrf_token"] = bin2hex(random_bytes(32));
+}
+
+
 // Get article ID
 $article_id = (int)($_GET["id"] ?? 0);
 
@@ -227,12 +233,31 @@ $stmt->close();
 
             <?php if (isset($_SESSION["user_id"])): ?>
 
-                <a
-                    href="user/save-article.php?article_id=<?php echo $article["id"]; ?>"
-                    class="article-save-btn"
+                <form
+                    action="user/save-article.php"
+                    method="POST"
                 >
-                    ❤️ Save Article
-                </a>
+
+                    <input
+                        type="hidden"
+                        name="article_id"
+                        value="<?php echo $article["id"]; ?>"
+                    >
+
+                    <input
+                        type="hidden"
+                        name="csrf_token"
+                        value="<?php echo htmlspecialchars($_SESSION["csrf_token"]); ?>"
+                    >
+
+                    <button
+                        type="submit"
+                        class="article-save-btn"
+                    >
+                        ❤️ Save Article
+                    </button>
+
+                </form>
 
             <?php else: ?>
 
@@ -294,6 +319,12 @@ $stmt->close();
                     value="<?php echo $article["id"]; ?>"
                 >
 
+                <input
+                    type="hidden"
+                    name="csrf_token"
+                    value="<?php echo htmlspecialchars($_SESSION["csrf_token"]); ?>"
+                >
+
 
                 <textarea
                     name="comment"
@@ -348,20 +379,26 @@ $stmt->close();
                             <div>
 
                                 <div class="comment-avatar">
+
                                     <?php
                                     echo strtoupper(
                                         substr($comment["name"], 0, 1)
                                     );
                                     ?>
+
                                 </div>
 
 
                                 <div>
 
                                     <strong>
-                                        <?php echo htmlspecialchars(
+
+                                        <?php
+                                        echo htmlspecialchars(
                                             $comment["name"]
-                                        ); ?>
+                                        );
+                                        ?>
+
                                     </strong>
 
                                     <span>
@@ -387,13 +424,41 @@ $stmt->close();
                                 $_SESSION["user_id"] == $comment["user_id"]
                             ): ?>
 
-                                <a
-                                    href="user/delete-comment.php?id=<?php echo $comment["id"]; ?>"
-                                    class="article-delete-comment"
-                                    onclick="return confirm('Delete this comment?');"
+
+                                <form
+                                    action="user/delete-comment.php"
+                                    method="POST"
+                                    onsubmit="return confirm('Delete this comment?');"
                                 >
-                                    Delete
-                                </a>
+
+                                    <input
+                                        type="hidden"
+                                        name="comment_id"
+                                        value="<?php echo $comment["id"]; ?>"
+                                    >
+
+                                    <input
+                                        type="hidden"
+                                        name="article_id"
+                                        value="<?php echo $article["id"]; ?>"
+                                    >
+
+                                    <input
+                                        type="hidden"
+                                        name="csrf_token"
+                                        value="<?php echo htmlspecialchars($_SESSION["csrf_token"]); ?>"
+                                    >
+
+                                    <button
+                                        type="submit"
+                                        class="article-delete-comment"
+                                        style="background:none;border:none;padding:0;cursor:pointer;"
+                                    >
+                                        Delete
+                                    </button>
+
+                                </form>
+
 
                             <?php endif; ?>
 

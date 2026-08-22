@@ -9,10 +9,19 @@ require_once "../config/database.php";
 // ADMIN PROTECTION
 // =====================================
 
-if (!isset($_SESSION["user_id"]) || $_SESSION["role"] !== "admin") {
+if (
+    !isset($_SESSION["user_id"]) ||
+    ($_SESSION["role"] ?? "") !== "admin"
+) {
 
     header("Location: ../index.php");
     exit();
+}
+
+
+// Create CSRF token
+if (empty($_SESSION["csrf_token"])) {
+    $_SESSION["csrf_token"] = bin2hex(random_bytes(32));
 }
 
 
@@ -68,6 +77,20 @@ $message = "";
 // =====================================
 
 if ($_SERVER["REQUEST_METHOD"] === "POST") {
+
+    // Check CSRF token
+    $csrf_token = $_POST["csrf_token"] ?? "";
+
+    if (
+        !hash_equals(
+            $_SESSION["csrf_token"],
+            $csrf_token
+        )
+    ) {
+        http_response_code(403);
+        exit("Invalid security token.");
+    }
+
 
     $title = trim($_POST["title"] ?? "");
     $category = trim($_POST["category"] ?? "");
@@ -328,6 +351,15 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
             enctype="multipart/form-data"
             class="article-form"
         >
+
+
+            <!-- CSRF -->
+
+            <input
+                type="hidden"
+                name="csrf_token"
+                value="<?php echo htmlspecialchars($_SESSION["csrf_token"]); ?>"
+            >
 
 
             <!-- TITLE -->

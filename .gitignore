@@ -1,2 +1,21 @@
+# API keys
 config/api.php
 config/api-config.php
+
+# Database credentials
+config/database.php
+
+# Environment files
+.env
+.env.*
+
+# User/admin uploaded article images
+uploads/articles/*
+!uploads/articles/.gitkeep
+
+# Logs
+*.log
+
+# Operating system files
+.DS_Store
+Thumbs.db

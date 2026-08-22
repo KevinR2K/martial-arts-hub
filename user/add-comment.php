@@ -13,24 +13,55 @@ if (!isset($_SESSION["user_id"])) {
 }
 
 
-// Get the data from the form
-$user_id = $_SESSION["user_id"];
+// Only allow POST requests
+if ($_SERVER["REQUEST_METHOD"] !== "POST") {
 
-$article_id = $_POST["article_id"] ?? 0;
+    header("Location: ../index.php");
+    exit();
+}
+
+
+// Get form data
+$user_id = (int)$_SESSION["user_id"];
+
+$article_id = (int)($_POST["article_id"] ?? 0);
 
 $comment = trim($_POST["comment"] ?? "");
+
+$csrf_token = $_POST["csrf_token"] ?? "";
+
+
+// Check CSRF token
+if (
+    empty($_SESSION["csrf_token"]) ||
+    !hash_equals($_SESSION["csrf_token"], $csrf_token)
+) {
+
+    http_response_code(403);
+    exit("Invalid security token.");
+}
+
+
+// Validate article ID
+if ($article_id <= 0) {
+
+    header("Location: ../index.php");
+    exit();
+}
 
 
 // Make sure the comment is not empty
 if ($comment === "") {
 
-    echo "Comment cannot be empty.";
+    header("Location: ../article.php?id=" . $article_id);
     exit();
 }
 
 
 // Check that the article exists
-$sql = "SELECT id FROM articles WHERE id = ?";
+$sql = "SELECT id
+        FROM articles
+        WHERE id = ?";
 
 $stmt = $conn->prepare($sql);
 
@@ -41,9 +72,11 @@ $stmt->execute();
 $result = $stmt->get_result();
 
 
-if ($result->num_rows == 0) {
+if ($result->num_rows === 0) {
 
-    echo "Article not found.";
+    $stmt->close();
+
+    header("Location: ../index.php");
     exit();
 }
 
@@ -51,24 +84,26 @@ $stmt->close();
 
 
 // Save the comment
-$sql = "INSERT INTO comments (user_id, article_id, comment)
+$sql = "INSERT INTO comments
+        (user_id, article_id, comment)
         VALUES (?, ?, ?)";
 
 $stmt = $conn->prepare($sql);
 
-$stmt->bind_param("iis", $user_id, $article_id, $comment);
+$stmt->bind_param(
+    "iis",
+    $user_id,
+    $article_id,
+    $comment
+);
 
-
-if ($stmt->execute()) {
-
-    header("Location: ../article.php?id=" . $article_id);
-    exit();
-
-} else {
-
-    echo "Could not add comment.";
-}
+$stmt->execute();
 
 $stmt->close();
+
+
+// Return to article
+header("Location: ../article.php?id=" . $article_id);
+exit();
 
 ?>

@@ -12,18 +12,39 @@ if (!isset($_SESSION["user_id"])) {
 }
 
 
-// Get the logged-in user's ID
-$user_id = $_SESSION["user_id"];
+// Only allow POST requests
+if ($_SERVER["REQUEST_METHOD"] !== "POST") {
+    header("Location: ../index.php");
+    exit();
+}
+
+
+// Get logged-in user ID
+$user_id = (int)$_SESSION["user_id"];
 
 
 // Get fighter information
-$fighter_slug = $_POST["fighter_slug"] ?? "";
-$fighter_name = $_POST["fighter_name"] ?? "";
-$fighter_image = $_POST["fighter_image"] ?? "";
+$fighter_slug = trim($_POST["fighter_slug"] ?? "");
+
+$fighter_name = trim($_POST["fighter_name"] ?? "");
+
+$fighter_image = trim($_POST["fighter_image"] ?? "");
+
+$csrf_token = $_POST["csrf_token"] ?? "";
 
 
-// Make sure we received the fighter
-if (empty($fighter_slug) || empty($fighter_name)) {
+// Check CSRF token
+if (
+    empty($_SESSION["csrf_token"]) ||
+    !hash_equals($_SESSION["csrf_token"], $csrf_token)
+) {
+    http_response_code(403);
+    exit("Invalid security token.");
+}
+
+
+// Make sure fighter data exists
+if ($fighter_slug === "" || $fighter_name === "") {
     header("Location: ../index.php");
     exit();
 }
@@ -50,7 +71,11 @@ $stmt->close();
 
 
 // Return to fighter profile
-header("Location: ../fighter.php?slug=" . urlencode($fighter_slug));
+header(
+    "Location: ../fighter.php?slug=" .
+    urlencode($fighter_slug)
+);
+
 exit();
 
 ?>

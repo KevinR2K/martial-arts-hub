@@ -13,33 +13,68 @@ if (!isset($_SESSION["user_id"])) {
 }
 
 
-// Get the comment ID
-$comment_id = $_GET["id"] ?? 0;
+// Only allow POST requests
+if ($_SERVER["REQUEST_METHOD"] !== "POST") {
+
+    header("Location: ../index.php");
+    exit();
+}
+
+
+// Get submitted data
+$comment_id = (int)($_POST["comment_id"] ?? 0);
+
+$article_id = (int)($_POST["article_id"] ?? 0);
+
+$csrf_token = $_POST["csrf_token"] ?? "";
 
 $user_id = $_SESSION["user_id"];
+
+
+// Check CSRF token
+if (
+    empty($_SESSION["csrf_token"]) ||
+    !hash_equals($_SESSION["csrf_token"], $csrf_token)
+) {
+
+    http_response_code(403);
+    exit("Invalid security token.");
+}
+
+
+// Validate IDs
+if ($comment_id <= 0 || $article_id <= 0) {
+
+    header("Location: ../index.php");
+    exit();
+}
 
 
 // Delete only if the comment belongs to this user
 $sql = "DELETE FROM comments
         WHERE id = ?
-        AND user_id = ?";
+        AND user_id = ?
+        AND article_id = ?";
 
 $stmt = $conn->prepare($sql);
 
-$stmt->bind_param("ii", $comment_id, $user_id);
+$stmt->bind_param(
+    "iii",
+    $comment_id,
+    $user_id,
+    $article_id
+);
 
-
-if ($stmt->execute()) {
-
-    header("Location: " . $_SERVER["HTTP_REFERER"]);
-    exit();
-
-} else {
-
-    echo "Could not delete comment.";
-}
-
+$stmt->execute();
 
 $stmt->close();
+
+
+// Return to article
+header(
+    "Location: ../article.php?id=" . $article_id
+);
+
+exit();
 
 ?>
